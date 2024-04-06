@@ -1,38 +1,21 @@
-console.log("start");
-setTimeout(() => {
-  console.log("m");
-}, 2000);
-console.log("final");
+const { response } = require("express");
 
-let max = 1000000;
+let fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
+);
 
-function isPrime(n) {
-  for (let i = 2; i <= Math.sqrt(n); i++) {
-    if (n % i == 0) {
-      return false;
-    }
-  }
+// console.log(fetchPromise);
 
-  return n > 1;
-}
+fetchPromise.then((response) => {
+  console.log(response);
+  console.log(response.json());
+  response.json().then((data) => {
+    console.log(data); //response json data  json() is an async method
+  });
+}); // this is callback function hell
 
-const random = (max) => Math.floor(Math.random() * max);
-
-function generatePrimes(quota) {
-  const primes = [];
-  while (primes.length < quota) {
-    const candidate = random(max);
-    if (isPrime(candidate)) {
-      primes.push(candidate);
-    }
-  }
-  return primes;
-}
-
-const output = document.querySelector("div#output");
-const button = document.querySelector("#generate");
-button.addEventListener("click", (e) => {
-  const quota = document.querySelector("#number");
-  const primes = generatePrimes(quota.value);
-  output.innerHTML = primes;
-});
+fetchPromise
+  .then((response) => response.json)
+  .then((data) => {
+    console.log(data);
+  });
