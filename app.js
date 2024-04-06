@@ -18,4 +18,4 @@ fetchPromise
   .then((response) => response.json)
   .then((data) => {
     console.log(data);
-  });
+  }); // good expression
