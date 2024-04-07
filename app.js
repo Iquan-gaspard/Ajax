@@ -1,25 +1,21 @@
-const { response } = require("express");
+const e = require("express");
 
-let fetchPromise = fetch(
+const fetchPromise1 = fetch(
   "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
 );
+const fetchPromise2 = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/not-found"
+);
+const fetchPromise3 = fetch(
+  "https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json"
+);
 
-// console.log(fetchPromise);
-
-fetchPromise.then((response) => {
-  console.log(response);
-  console.log(response.json());
-  response.json().then((data) => {
-    console.log(data); //response json data  json() is an async method
-  });
-}); // this is callback function hell
-
-fetchPromise
-  .then((response) => response.json)
-  .then((data) => {
-    console.log(data);
+Promise.all([fetchPromise1, fetchPromise2, fetchPromise3])
+  .then((responses) => {
+    responses.forEach((response) => {
+      console.log(response.url, response.status);
+    });
   })
   .catch((e) => {
-    console.log(fetchPromise);
     console.log(e);
   });
