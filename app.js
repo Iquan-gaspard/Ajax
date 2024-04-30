@@ -1,65 +1,40 @@
-let balance = 0; // shared resource
-let mutex = Promise.resolve(); // return fulfilled Promise object
+const name = document.querySelector("#name");
+const delay = document.querySelector("#delay");
+const button = document.querySelector("#set-alarm");
+const output = document.querySelector("#output");
 
-const randomDelay = () => {
-  // return value is a Promise
-  // and the time for this promise changing from pending to fulfilled
-  // is random (0s-0.1s)
-  return new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
-};
+//return promise object
+//pending delay second =>fulfill
+//if delay < 0 => reject
 
-async function loadBalance() {
-  await randomDelay(); // 等個隨機的0s~0.1s
-  return balance;
+function alarm(person, delay) {
+  return new Promise((resolve, reject) => {
+    if (delay < 0) {
+      reject("delay can't upper zero");
+    } else {
+      setTimeout(() => {
+        resolve(person + "get up");
+      }, delay);
+    }
+  });
 }
 
-async function saveBalance(value) {
-  await randomDelay();
-  balance = value;
-}
-
-async function sellGrapes() {
-  mutex = mutex
-    .then(async () => {
-      const balance = await loadBalance();
-      console.log(`賣葡萄前，帳戶金額為: ${balance}`);
-      const newBalance = balance + 50;
-      await saveBalance(newBalance);
-      console.log(`賣葡萄後，帳戶金額為: ${newBalance}`);
+button.addEventListener("click", (e) => {
+  let promiseObject = alarm(name.value, delay.value);
+  promiseObject
+    .then((message) => {
+      output.innerHTML = message;
     })
     .catch((e) => {
-      console.log(e);
+      output.innerHTML = e;
     });
-  return mutex;
-}
+});
 
-async function sellOlives() {
-  mutex = mutex
-    .then(async () => {
-      const balance = await loadBalance();
-      console.log(`賣橄欖前，帳戶金額為: ${balance}`);
-      const newBalance = balance + 50;
-      await saveBalance(newBalance);
-      console.log(`賣橄欖後，帳戶金額為: ${newBalance}`);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
-  return mutex;
-}
-
-async function main() {
-  await Promise.all([
-    sellGrapes(),
-    sellOlives(),
-    sellOlives(),
-    sellOlives(),
-    sellGrapes(),
-    sellGrapes(),
-    sellGrapes(),
-  ]);
-  const balance = await loadBalance();
-  console.log(`賣葡萄與橄欖後的帳戶金額是$${balance}`);
-}
-
-main();
+button.addEventListener("click", async () => {
+  try {
+    let result = await alarm(name.value, delay.value);
+    output.innerHTML = result;
+  } catch (e) {
+    output.innerHTML = e;
+  }
+});
