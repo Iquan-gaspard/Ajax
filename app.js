@@ -1,40 +1,32 @@
-const name = document.querySelector("#name");
-const delay = document.querySelector("#delay");
-const button = document.querySelector("#set-alarm");
-const output = document.querySelector("#output");
+let output = document.querySelector("#output");
 
-//return promise object
-//pending delay second =>fulfill
-//if delay < 0 => reject
-
-function alarm(person, delay) {
-  return new Promise((resolve, reject) => {
-    if (delay < 0) {
-      reject("delay can't upper zero");
-    } else {
-      setTimeout(() => {
-        resolve(person + "get up");
-      }, delay);
-    }
-  });
+async function hello() {
+  try {
+    let result = await fetch("https://v2.jokeapi.dev/joke/Dark?type=single");
+    let data = await result.json();
+    output.innerText += data.joke + "\n";
+  } catch (e) {
+    console.log(e);
+  }
 }
 
-button.addEventListener("click", (e) => {
-  let promiseObject = alarm(name.value, delay.value);
-  promiseObject
-    .then((message) => {
-      output.innerHTML = message;
-    })
-    .catch((e) => {
-      output.innerHTML = e;
-    });
+let button = document.querySelector("#new-joke");
+button.addEventListener("click", () => {
+  hello();
 });
 
-button.addEventListener("click", async () => {
+let myKey = "7eb63379005491f28d9aa149fb7393c6";
+let city = "Taipei";
+let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${myKey}`;
+
+async function weather() {
   try {
-    let result = await alarm(name.value, delay.value);
-    output.innerHTML = result;
+    let result = await fetch(url);
+    let data = await result.json();
+    console.log(data);
   } catch (e) {
-    output.innerHTML = e;
+    console.log(e);
   }
-});
+}
+
+weather();
